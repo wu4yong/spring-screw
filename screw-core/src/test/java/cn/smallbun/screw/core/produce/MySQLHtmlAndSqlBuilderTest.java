@@ -1,3 +1,20 @@
+/*
+ * screw-core - 简洁好用的数据库表结构文档生成工具
+ * Copyright © 2020 SanLi (qinggang.zuo@gmail.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package cn.smallbun.screw.core.example;
 
 import cn.smallbun.screw.core.Configuration;
@@ -34,7 +51,7 @@ public class MySQLHtmlAndSqlBuilderTest {
         String dbName = "fate";
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/" + dbName +" ?serverTimezone=UTC");
+        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/" + dbName + " ?serverTimezone=UTC");
         config.setUsername("root");
         config.setPassword("root");
         config.addDataSourceProperty("useInformationSchema", "true");
@@ -67,27 +84,19 @@ public class MySQLHtmlAndSqlBuilderTest {
      * @param ignorePrefix
      * @param ignoreSuffix
      */
-    public static void createHtml(DataSource dataSource, String userDir, String versionStr, List<String> ignoreTable, List<String> ignorePrefix, List<String> ignoreSuffix) {
+    public static void createHtml(DataSource dataSource, String userDir, String versionStr,
+                                  List<String> ignoreTable, List<String> ignorePrefix,
+                                  List<String> ignoreSuffix) {
 
-        EngineConfig engineConfig = EngineConfig.builder()
-                .fileOutputDir(userDir)
-                .openOutputDir(false)
-                .fileType(EngineFileType.HTML)
-                .produceType(EngineTemplateType.freemarker)
-                .build();
+        EngineConfig engineConfig = EngineConfig.builder().fileOutputDir(userDir)
+            .openOutputDir(false).fileType(EngineFileType.HTML)
+            .produceType(EngineTemplateType.freemarker).build();
 
-        ProcessConfig processConfig = ProcessConfig.builder()
-                .ignoreTableName(ignoreTable)
-                .ignoreTablePrefix(ignorePrefix)
-                .ignoreTableSuffix(ignoreSuffix)
-                .build();
+        ProcessConfig processConfig = ProcessConfig.builder().ignoreTableName(ignoreTable)
+            .ignoreTablePrefix(ignorePrefix).ignoreTableSuffix(ignoreSuffix).build();
 
-        Configuration config = Configuration.builder()
-                .version(versionStr)
-                .description("数据库文档")
-                .dataSource(dataSource)
-                .engineConfig(engineConfig)
-                .produceConfig(processConfig).build();
+        Configuration config = Configuration.builder().version(versionStr).description("数据库文档")
+            .dataSource(dataSource).engineConfig(engineConfig).produceConfig(processConfig).build();
 
         new DocumentationExecute(config).execute();
     }
@@ -104,11 +113,15 @@ public class MySQLHtmlAndSqlBuilderTest {
      * @throws IOException
      * @throws SQLException
      */
-    public static void createSql(String dbName, DataSource dataSource, String userDir, String versionStr, List<String> ignoreTable, List<String> ignorePrefix, List<String> ignoreSuffix) throws IOException, SQLException {
+    public static void createSql(String dbName, DataSource dataSource, String userDir,
+                                 String versionStr, List<String> ignoreTable,
+                                 List<String> ignorePrefix,
+                                 List<String> ignoreSuffix) throws IOException, SQLException {
         Statement tmt = null;
         PreparedStatement pstmt = null;
         List<String> createSqlList = new ArrayList<>();
-        String sql = "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+dbName+"' and TABLE_TYPE = 'BASE TABLE'";
+        String sql = "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"
+                     + dbName + "' and TABLE_TYPE = 'BASE TABLE'";
         tmt = dataSource.getConnection().createStatement();
         pstmt = dataSource.getConnection().prepareStatement(sql);
         ResultSet res = tmt.executeQuery(sql);
@@ -156,10 +169,11 @@ public class MySQLHtmlAndSqlBuilderTest {
     }
 
     public static void string2file(String collect, String dirStr) throws IOException {
-        System.out.println("文件地址  "+ dirStr);
+        System.out.println("文件地址  " + dirStr);
         OutputStreamWriter osw = null;
         try {
-            osw = new OutputStreamWriter(new FileOutputStream(new File(dirStr)), StandardCharsets.UTF_8);
+            osw = new OutputStreamWriter(new FileOutputStream(new File(dirStr)),
+                StandardCharsets.UTF_8);
             osw.write(collect);
             osw.flush();
         } finally {
